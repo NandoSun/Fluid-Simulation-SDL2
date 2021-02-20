@@ -1,0 +1,22 @@
+{
+	"version":"2.0.0",
+	"tasks": [
+		{
+			"label": "build",
+			"type": "shell",
+			"command": "g++",
+			"args": [
+				"-g",
+				"main.cpp",
+				"Fluid.cpp",
+				"-o",
+				"fluidSim",
+				"-lSDL2"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		}
+	]
+}
