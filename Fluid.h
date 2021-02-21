@@ -10,6 +10,8 @@ class Fluid {
         int nElements = 0;
         int size;
 
+		float amountAdded = 1.2f;		
+
         float diff = 0.01f;
 	    float visc = 0.01f;
 	    float dt = 0.005f;
@@ -28,7 +30,6 @@ class Fluid {
 
 	    vector<float>source;
 
-
         void addSource(const vector<float>& s, vector<float>& x);
 	    void setBounds(int N, int mode, vector<float>& x);
 	    void diffuse(int N, int mode, vector<float>& x, const vector<float>& x0);
@@ -37,9 +38,10 @@ class Fluid {
 
     public:
         Fluid(int size);
-		inline int IX (int i, int k) { return i + (size+  2) * k; }
-
-		int & getSize() { return size;}
+		
+		inline int IX(int i, int k) { return i + (size+  2) * k; }
+		void userInputSourceDensity(int xMouse, int yMouse);
+		void userInputSourceVelocity(int xMouse, int yMouse);
         void calcVelocity(int size);
 	    void calcDensity(int size);
 		void draw(SDL_Renderer* renderer, int screenLength);

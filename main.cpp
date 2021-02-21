@@ -2,13 +2,15 @@
 #include <SDL2/SDL.h>
 #include "Fluid.h"
 
-bool running = true;
+bool running = true, mousePressed = false;
+int xMouse = 0, yMouse = 0;
+bool densityMode = true;
 
 inline double map(double value, double min_in, double max_in, double min_out, double max_out) {
 	return (value - min_in) * (max_out - min_out) / (max_in - min_in) + min_out;
 }
 
-void PollEvents (SDL_Event& event) {
+void PollEvents(SDL_Event& event) {
 
     if (SDL_PollEvent(&event)) {
         switch(event.type){
@@ -20,7 +22,8 @@ void PollEvents (SDL_Event& event) {
             case SDL_MOUSEBUTTONDOWN: {
                 switch (event.button.button) {
                     case SDL_BUTTON_LEFT: {
-                        //do sth
+                        SDL_GetMouseState(&xMouse, &yMouse);
+                        mousePressed = true;
                         break;
                     }
                     case SDL_BUTTON_RIGHT: {
@@ -58,9 +61,16 @@ int main(int argc, char** argv){
     //draw fluid
     while (running){
         PollEvents(event);
-        //process input
-        //make caculations
-        //convert values to color
+
+        if (mousePressed) {
+            if (densityMode) fluid.userInputSourceDensity(xMouse, yMouse);
+            else fluid.userInputSourceVelocity(xMouse, yMouse);
+            mousePressed = false;
+        }
+        
+        if (densityMode) fluid.calcDensity(n);
+        else fluid.calcVelocity(n);
+
         //RenderDrawColor & RenderClear
         fluid.draw(renderer, n);
     }

@@ -1,5 +1,5 @@
 #include "Fluid.h"
-
+#include <iostream>
 
 Fluid::Fluid(int size) 
 	: size(size), nElements((2 + size) * (2 + size))
@@ -36,6 +36,7 @@ void Fluid::addSource(const vector<float>& source, vector<float>& x) {
 	}
 }
 
+
 void Fluid::setBounds(int N, int mode, vector<float>& x) {
 	for (int i = 1; i <= N; i++) {
 		x[IX(0, i)] = mode == 1 ? -x[IX(1, i)] : x[IX(1, i)];
@@ -50,11 +51,11 @@ void Fluid::setBounds(int N, int mode, vector<float>& x) {
 }
 
 void Fluid::diffuse(int N, int mode, vector<float>& x, const vector<float>& x0) {
-	float a = dt * diff * N * N;
+	float tmp = dt * diff * N * N;
 	for (int k = 0; k < 20; k++) {
 		for (int i = 1; i <= N; i++) {
 			for (int j = 1; j <= N; j++) {
-				x[IX(i, j)] = (x0[IX(i, j)] + a * (x[IX(i - 1, j)] + x[IX(i + 1, j)] + x[IX(i, j - 1)] + x[IX(i, j + 1)])) * (1.0f + 4.0f * a);
+				x[IX(i, j)] = (x0[IX(i, j)] + tmp * (x[IX(i - 1, j)] + x[IX(i + 1, j)] + x[IX(i, j - 1)] + x[IX(i, j + 1)])) * (1.0f + 4.0f * tmp);
 			}
 		}
 		setBounds(N, mode, x);
@@ -111,7 +112,7 @@ void Fluid::project(int N, vector<float>& u, vector<float>& v, vector<float>& p,
 		for (int j = 1; j <= N; j++) {
 			u[IX(i, j)] -= static_cast<float>(N) * 0.5f * (p[IX(i + 1, j)] - p[IX(i - 1, j)]);
 			v[IX(i, j)] -= static_cast<float>(N) * 0.5f * (p[IX(i, j + 1)] - p[IX(i, j - 1)]);
-		}
+		}    int xMouse = 0, yMouse = 0;
 	}
 	setBounds(N, 1, u);
 	setBounds(N, 2, v);
@@ -136,6 +137,7 @@ void Fluid::calcDensity(int size) {
 	advect(size, 0, dens, dens0, u, v);
 }
 
+
 void Fluid::draw(SDL_Renderer* renderer, int n){
 	
 	int nBoxes = n * n;
@@ -150,6 +152,7 @@ void Fluid::draw(SDL_Renderer* renderer, int n){
         	box.x = i * box.h;
         	box.y = k * box.w;
 
+			//int color = std::min((int)dens[IX(i, k)], 255);
 
         	SDL_SetRenderDrawColor(renderer, 220, 220, 220, 255);
         	SDL_RenderFillRect(renderer, &box);
@@ -164,3 +167,13 @@ void Fluid::draw(SDL_Renderer* renderer, int n){
 	}	
     SDL_RenderPresent(renderer); 	
 }
+
+void Fluid::userInputSourceDensity(int xMouse, int yMouse) {
+	dens0[IX(xMouse / size, yMouse / size)] += amountAdded;
+}
+
+void Fluid::userInputSourceVelocity(int xMouse, int yMouse) {
+	u0[IX(xMouse / size, yMouse / size)] += amountAdded;
+	v0[IX(xMouse / size, yMouse / size)] += amountAdded;
+}
+
