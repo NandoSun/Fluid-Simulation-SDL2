@@ -20,8 +20,8 @@ Fluid::Fluid(int size)
 		v.push_back(0.0f);
 		u0.push_back(0.0f);
 		v0.push_back(0.0f);
-		dens.push_back(2.0f);
-		dens0.push_back(2.0f);
+		dens.push_back(1.0f);
+		dens0.push_back(1.0f);
 		source.push_back(0.0f);
 		pressure.push_back(1.0f);
 		div.push_back(0.0f);
@@ -136,22 +136,31 @@ void Fluid::calcDensity(int size) {
 	advect(size, 0, dens, dens0, u, v);
 }
 
-void Fluid::draw(SDL_Renderer* renderer, int screenLength){
-	int boxSize = 4 / screenLength + 4 + screenLength;
-	for (int i = 0; i <= screenLength + 1; i++){
-		for (int k = 0; k <= screenLength + 1; k++){
+void Fluid::draw(SDL_Renderer* renderer, int n){
+
+	int nBoxes = n * n;
+    SDL_RenderClear(renderer);
+
+	for (int i = 0; i <= n + 1; i++){
+		for (int k = 0; k <= n + 1; k++){
 
 			SDL_Rect box;
-			box.w = boxSize + 1;
-			box.h = boxSize + 1;
-			box.x = i * boxSize;
-			box.y = (screenLength + 1 - k) * boxSize;
+        	box.h = 640 / n;
+        	box.w = 640 / n;
+        	box.x = i * box.h;
+        	box.y = k * box.w;
 
-			int temp = dens[IX(i,k)] * 255;
-			int color = temp < 255 ? temp : 255;
 
-			SDL_SetRenderDrawColor(renderer, color, color, color, 0);
-			SDL_RenderFillRect(renderer, &box);
+        	SDL_SetRenderDrawColor(renderer, 220, 220, 220, 255);
+        	SDL_RenderFillRect(renderer, &box);
+	
+        	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        	SDL_RenderDrawRect(renderer, &box);
+
+        	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+
+
 		} 
 	}	
+    SDL_RenderPresent(renderer); 	
 }

@@ -34,33 +34,31 @@ void PollEvents (SDL_Event& event) {
 
 int main(int argc, char** argv){
 
+    int xRes = 640, yRes = 640;
+    
     SDL_Init(SDL_INIT_EVERYTHING);
     SDL_Renderer* renderer;
     SDL_Window* window;
     SDL_Event event;
 
-    int xRes = 896, yRes = 896;
 
     window = SDL_CreateWindow("Fluid Simulation", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, xRes, yRes, SDL_WINDOW_RESIZABLE);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-
+    
     //background
-    SDL_SetRenderDrawColor(renderer, 220, 220, 220, 255);
-    SDL_RenderClear(renderer);
-
+    //SDL_SetRenderDrawColor(renderer, 220, 220, 220, 255);
+    //SDL_RenderClear(renderer);
+    int n = 64;
     //set up fuid
-    Fluid fluid = Fluid(64);
+    Fluid fluid = Fluid(n);
     //draw fluid
-
     while (running){
         PollEvents(event);
         //process input
         //make caculations
         //convert values to color
         //RenderDrawColor & RenderClear
-        fluid.draw(renderer, xRes);
-        SDL_RenderClear(renderer);
-        SDL_RenderPresent(renderer); 
+        fluid.draw(renderer, n);
     }
 
     SDL_DestroyWindow(window);
