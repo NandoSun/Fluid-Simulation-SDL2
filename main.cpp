@@ -4,6 +4,10 @@
 
 bool running = true;
 
+inline double map(double value, double min_in, double max_in, double min_out, double max_out) {
+	return (value - min_in) * (max_out - min_out) / (max_in - min_in) + min_out;
+}
+
 void PollEvents (SDL_Event& event) {
 
     if (SDL_PollEvent(&event)) {

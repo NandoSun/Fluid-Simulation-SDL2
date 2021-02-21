@@ -137,7 +137,7 @@ void Fluid::calcDensity(int size) {
 }
 
 void Fluid::draw(SDL_Renderer* renderer, int n){
-
+	
 	int nBoxes = n * n;
     SDL_RenderClear(renderer);
 
