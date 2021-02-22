@@ -38,11 +38,12 @@ class Fluid {
 
     public:
         Fluid(int size);
-		
 		inline int IX(int i, int k) { return i + (size+  2) * k; }
 		void userInputSourceDensity(int xMouse, int yMouse);
 		void userInputSourceVelocity(int xMouse, int yMouse);
         void calcVelocity(int size);
 	    void calcDensity(int size);
 		void draw(SDL_Renderer* renderer, int screenLength);
+
+		inline float getVecContent(int i) { return dens[i]; }
 }; 

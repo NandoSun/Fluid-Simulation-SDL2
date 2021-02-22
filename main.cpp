@@ -1,14 +1,11 @@
+#include "Fluid.h"
 #include <iostream>
 #include <SDL2/SDL.h>
-#include "Fluid.h"
 
 bool running = true, mousePressed = false;
 int xMouse = 0, yMouse = 0;
 bool densityMode = true;
 
-inline double map(double value, double min_in, double max_in, double min_out, double max_out) {
-	return (value - min_in) * (max_out - min_out) / (max_in - min_in) + min_out;
-}
 
 void PollEvents(SDL_Event& event) {
 
@@ -16,7 +13,6 @@ void PollEvents(SDL_Event& event) {
         switch(event.type){
             case SDL_QUIT: {
                 running = false;
-                std::cout << "Simulation was terminated via running variable\n";
                 break;
             }
             case SDL_MOUSEBUTTONDOWN: {
@@ -33,14 +29,22 @@ void PollEvents(SDL_Event& event) {
                 }
             }
             case SDL_KEYDOWN: {
-                
+                switch(event.key.keysym.sym) {
+                    case SDLK_ESCAPE:
+                    running = false;
+                    break;
+                }
+                break;
             }
+            case SDL_MOUSEMOTION:
+                break;
 		}
     }
 }
 
 int main(int argc, char** argv){
 
+    int n = 64;
     int xRes = 640, yRes = 640;
     
     SDL_Init(SDL_INIT_EVERYTHING);
@@ -49,29 +53,26 @@ int main(int argc, char** argv){
     SDL_Event event;
 
 
-    window = SDL_CreateWindow("Fluid Simulation", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, xRes, yRes, SDL_WINDOW_RESIZABLE);
+    window = SDL_CreateWindow("Fluid Simulation", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, xRes, yRes, 0);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     
-    //background
-    //SDL_SetRenderDrawColor(renderer, 220, 220, 220, 255);
-    //SDL_RenderClear(renderer);
-    int n = 64;
-    //set up fuid
     Fluid fluid = Fluid(n);
-    //draw fluid
+
     while (running){
+
         PollEvents(event);
 
         if (mousePressed) {
             if (densityMode) fluid.userInputSourceDensity(xMouse, yMouse);
             else fluid.userInputSourceVelocity(xMouse, yMouse);
+            std::cout << "x: " << xMouse << " y: " << yMouse << std::endl;
             mousePressed = false;
         }
-        
+        /*
         if (densityMode) fluid.calcDensity(n);
         else fluid.calcVelocity(n);
-
-        //RenderDrawColor & RenderClear
+        std::cout << fluid.getVecContent(5) << " " << fluid.getVecContent(26) << " " << fluid.getVecContent(41) << " " << fluid.getVecContent(60) << "\n";
+        */
         fluid.draw(renderer, n);
     }
 

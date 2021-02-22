@@ -1,4 +1,5 @@
 #include "Fluid.h"
+#include <vector>
 #include <iostream>
 
 Fluid::Fluid(int size) 
@@ -142,7 +143,7 @@ void Fluid::draw(SDL_Renderer* renderer, int n){
 	
 	int nBoxes = n * n;
     SDL_RenderClear(renderer);
-
+	int color = 5;
 	for (int i = 0; i <= n + 1; i++){
 		for (int k = 0; k <= n + 1; k++){
 
@@ -154,7 +155,7 @@ void Fluid::draw(SDL_Renderer* renderer, int n){
 
 			//int color = std::min((int)dens[IX(i, k)], 255);
 
-        	SDL_SetRenderDrawColor(renderer, 220, 220, 220, 255);
+        	SDL_SetRenderDrawColor(renderer, 3 * color, 2 * color, 5 * color, 255);
         	SDL_RenderFillRect(renderer, &box);
 	
         	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -162,7 +163,7 @@ void Fluid::draw(SDL_Renderer* renderer, int n){
 
         	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
-
+			color += 27;
 		} 
 	}	
     SDL_RenderPresent(renderer); 	
