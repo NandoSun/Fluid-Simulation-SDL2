@@ -39,11 +39,16 @@ class Fluid {
     public:
         Fluid(int size);
 		inline int IX(int i, int k) { return i + (size+  2) * k; }
+		inline float map(float value, float min_in, float max_in, float min_out, double max_out) {
+			return (value - min_in) * (max_out - min_out) / (max_in - min_in) + min_out;
+		}		
+	void linearSolve(int mode, vector<float> &x, const vector<float> &x0,float h1, float h2);
 		void userInputSourceDensity(int xMouse, int yMouse);
 		void userInputSourceVelocity(int xMouse, int yMouse);
         void calcVelocity(int size);
 	    void calcDensity(int size);
 		void draw(SDL_Renderer* renderer, int screenLength);
 
-		inline float getVecContent(int i) { return dens[i]; }
+		inline float getDensContent(int i) { return dens[i]; }
+		inline float getVelContent(int i) { return u[i]; }
 }; 

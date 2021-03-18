@@ -4,7 +4,7 @@
 
 bool running = true, mousePressed = false;
 int xMouse = 0, yMouse = 0;
-bool densityMode = true;
+bool densityMode = false;
 
 
 void PollEvents(SDL_Event& event) {
@@ -68,12 +68,13 @@ int main(int argc, char** argv){
             std::cout << "x: " << xMouse << " y: " << yMouse << std::endl;
             mousePressed = false;
         }
-        /*
-        if (densityMode) fluid.calcDensity(n);
-        else fluid.calcVelocity(n);
-        std::cout << fluid.getVecContent(5) << " " << fluid.getVecContent(26) << " " << fluid.getVecContent(41) << " " << fluid.getVecContent(60) << "\n";
-        */
+        
+        fluid.calcDensity(n);
+        fluid.calcVelocity(n);
+        std::cout << fluid.getDensContent(5) << " " << fluid.getDensContent(26) << " " << fluid.getDensContent(41) << " " << fluid.getDensContent(60) << "\n";
+        
         fluid.draw(renderer, n);
+
     }
 
     SDL_DestroyWindow(window);
