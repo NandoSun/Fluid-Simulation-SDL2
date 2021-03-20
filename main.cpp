@@ -67,6 +67,7 @@ int main(int argc, char **argv)
 
     Fluid fluid = Fluid(n);
     std::cout << "start\n";
+    
     while (running)
     {
 
