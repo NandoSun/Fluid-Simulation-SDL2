@@ -4,11 +4,12 @@
 
 bool running = true, mousePressed = false;
 int xMouse = 0, yMouse = 0;
-bool densityMode = true;
+bool densityMode = false;
+
 
 void PollEvents(SDL_Event &event)
 {
-    std::cout << "events entered\n";
+    //std::cout << "events entered\n";
     if (SDL_PollEvent(&event))
     {
         switch (event.type)
@@ -67,7 +68,7 @@ int main(int argc, char **argv)
 
     Fluid fluid = Fluid(n);
     std::cout << "start\n";
-    
+
     while (running)
     {
 
@@ -79,15 +80,16 @@ int main(int argc, char **argv)
                 fluid.userInputSourceDensity(xMouse, yMouse);
             else
                 fluid.userInputSourceVelocity(xMouse, yMouse);
-            std::cout << "x: " << xMouse << " y: " << yMouse << std::endl;
+            //std::cout << "x: " << xMouse << " y: " << yMouse << std::endl;
             mousePressed = false;
         }
 
         fluid.calcDensity(n);
         fluid.calcVelocity(n);
-        std::cout << fluid.getDensContent(5) << " " << fluid.getDensContent(26) << " " << fluid.getDensContent(41) << " " << fluid.getDensContent(60) << "\n";
+        std::cout << fluid.getVelContent(5) << " " << fluid.getVelContent(26) << " " << fluid.getVelContent(41) << " " << fluid.getVelContent(60) << "\n";
 
         fluid.draw(renderer, n);
+        fluid.addVelRdn();
     }
 
     SDL_DestroyWindow(window);

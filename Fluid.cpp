@@ -5,18 +5,9 @@
 Fluid::Fluid(int size)
 	: size(size), nElements((2 + size) * (2 + size))
 {
+	
 
-	u.reserve(nElements);
-	v.reserve(nElements);
-	u0.reserve(nElements);
-	v0.reserve(nElements);
-	dens.reserve(nElements);
-	dens0.reserve(nElements);
-	source.reserve(nElements);
-	pressure.reserve(nElements);
-	div.reserve(nElements);
-
-	for (int i = 0; i < this->nElements; i++)
+	for (int i = 0; i < nElements; i++)
 	{
 		u.push_back(0.0f);
 		v.push_back(0.0f);
@@ -27,6 +18,10 @@ Fluid::Fluid(int size)
 		source.push_back(0.0f);
 		pressure.push_back(1.0f);
 		div.push_back(0.0f);
+	}
+
+	for (int i = dens0.size()  / 2; i < 30; i++){
+		dens0[i] += 200;
 	}
 }
 
@@ -94,22 +89,29 @@ void Fluid::advect(int N, int mode, vector<float> &dens, const vector<float> &de
 
 			x = i - dt0 * u[IX(i, j)];
 			y = j - dt0 * v[IX(i, j)];
+
 			if (x < 0.5f)
 				x = 0.5f;
+
 			if (x > N + 0.5f)
 				x = N + 0.5f;
+
 			i0 = (int)x;
 			i1 = i0 + 1;
+
 			if (y < 0.5f)
 				y = 0.5f;
+
 			if (y > N + 0.5f)
 				y = N + 0.5f;
+
 			j0 = (int)y;
 			j1 = j0 + 1;
 			s1 = x - i0;
 			s0 = 1.0f - s1;
 			t1 = y - j0;
 			t0 = 1.0f - t1;
+
 			dens[IX(i, j)] = s0 * (t0 * dens0[IX(i0, j0)] + t1 * dens0[IX(i0, j1)]) + s1 * (t0 * dens0[i1, j0] + t1 * dens0[IX(i1, j1)]);
 		}
 	}
@@ -169,7 +171,7 @@ void Fluid::calcDensity(int size)
 	dens0.swap(dens);
 	diffuse(size, 0, dens, dens0);
 	dens0.swap(dens),
-		advect(size, 0, dens, dens0, u, v);
+	advect(size, 0, dens, dens0, u, v);
 }
 
 void Fluid::draw(SDL_Renderer *renderer, int n)
@@ -187,19 +189,30 @@ void Fluid::draw(SDL_Renderer *renderer, int n)
 			box.w = 640 / n;
 			box.x = i * box.h;
 			box.y = k * box.w;
+			float absVal = sqrt(u[IX(i, k)] * u[IX(i, k)] + v[IX(i, k)] * v[IX(i, k)]);
+			int color = (int)map(absVal, 1e-30, 1e-10, 1, 255);
+			//std:: cout << color << endl;
+			float color2 = map((dens[IX(i, k)]), 0, 1, 255, 1);
+			//int color2 = (int)dens[IX(i, k)];
 
-			float color2 = map((dens[IX(i, k)]) / 2, 0, 1, 255, 1);
-
-			SDL_SetRenderDrawColor(renderer, color2, color2, color2, 255);
+			SDL_SetRenderDrawColor(renderer, 150, color, 250, 255);
 			SDL_RenderFillRect(renderer, &box);
 
 			SDL_SetRenderDrawColor(renderer, 220, 220, 220, 255);
 			SDL_RenderDrawRect(renderer, &box);
 
-			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 200);
 		}
 	}
 	SDL_RenderPresent(renderer);
+}
+
+void Fluid::addVelRdn(){
+	int velAngle, amount = 2000;
+	srand(time(NULL));
+	velAngle = rand() % 360;
+	u0[u0.size() / 2] += cos(velAngle) * amount;
+	v0[v0.size() / 2] += cos(360 - velAngle) * amount;
 }
 
 void Fluid::userInputSourceDensity(int xMouse, int yMouse)
