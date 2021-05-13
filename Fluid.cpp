@@ -1,7 +1,7 @@
 #include "Fluid.h"
 #include <vector>
 #include <iostream>
-
+//Test
 Fluid::Fluid(int size)
 	: size(size), nElements((2 + size) * (2 + size))
 {
